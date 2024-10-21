@@ -1,0 +1,9 @@
+replicaCount: 2
+environment: stage
+image:
+  repository: nginx
+  tag: "latest"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 80
