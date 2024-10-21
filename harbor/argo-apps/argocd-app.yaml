@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: holamundo
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/juanferrla/charts.git'
+    targetRevision: HEAD
+    path: holamundo
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: holamundo
+  syncPolicy:
+    manual:
+      prune: true
+      selfHeal: true
+  sources:
+    - repoURL: 'https://github.com/juanferrla/charts.git'
+      targetRevision: HEAD
+      path: holamundo
+      helm:
+        valueFiles:
+          - environments/values-dev.yaml
+
+
