@@ -4,7 +4,7 @@ metadata:
   name: argocd
   namespace: devops
 spec:
-  project: devops
+  project: default
   source:
     repoURL: 'https://github.com/juanferrla/helm-charts.git'
     targetRevision: HEAD
