@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: myapp
-  namespace: holamundo
+  namespace: default
 spec:
   project: default
   source:
@@ -11,7 +11,7 @@ spec:
     path: holamundo
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: holamundo
+    namespace: default
   syncPolicy:
     manual:
       prune: true
