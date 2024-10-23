@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argoevents
+  namespace: devops
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/juanferrla/helm-charts.git'
+    targetRevision: HEAD
+    path: argo-events
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: devops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  sources:
+    - repoURL: 'https://github.com/juanferrla/helm-charts.git'
+      targetRevision: HEAD
+      path: argo-events
+      helm:
+        valueFiles:
+          - values.yaml
+
+
