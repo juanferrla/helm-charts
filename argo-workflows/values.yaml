@@ -624,7 +624,7 @@ server:
   # ref: https://kubernetes.io/docs/user-guide/ingress/
   ingress:
     # -- Enable an ingress resource
-    enabled: false
+    enabled: true
     # -- Additional ingress annotations
     annotations: {}
     # -- Additional ingress labels
@@ -635,8 +635,8 @@ server:
     # -- List of ingress hosts
     ## Hostnames must be provided if Ingress is enabled.
     ## Secrets must be manually created in the namespace
-    hosts: []
-      # - argoworkflows.example.com
+    hosts: 
+       - argoworkflows.juanan.local
 
     # -- List of ingress paths
     paths:
