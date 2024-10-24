@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: docker-config
-data:
-  daemon.json: |
-    {
-      "insecure-registries" : ["harbor.juanan.local"]
-    }

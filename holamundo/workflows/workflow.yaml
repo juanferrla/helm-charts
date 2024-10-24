@@ -18,10 +18,24 @@ spec:
   - name: git-clone
     container:
       image: alpine/git:latest
-      command: [sh, -c]
-      args:
-        - |
-        git clone https://github.com/juanferrla/kappa.git /src;
+      command: [sh]
+      source: |
+        # Configurar las credenciales de Git usando las variables de entorno
+        git config --global credential.helper store
+        echo "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
+        # Clonar el repositorio
+        git clone https://github.com/juanferrla/kappa.git /src
+      env:
+      - name: GITHUB_USERNAME
+        valueFrom:
+           secretKeyRef:
+             name: github-secret
+             key: username
+      - name: GITHUB_TOKEN
+        valueFrom:
+           secretKeyRef:
+             name: github-secret
+             key: token
       volumeMounts:
         - name: workspace
           mountPath: /src
@@ -32,7 +46,16 @@ spec:
       image: docker:latest
       command: [sh, -c]
       args:
-        - docker build -t my-mssql /src/mssql/.
+        - |
+          echo "Creando imagen mssql";
+          cd /src/mssql;
+          docker build -t my-mssql .;
+          echo "Imagen creada";
+      volumeMounts:
+      - name: docker-sock
+        mountPath: /var/run/docker.sock  # Montar el socket de Docker
+      - name: workspace
+        mountPath: /src
 
   # Template para subir la imagen a Harbor
   - name: docker-push
@@ -47,12 +70,17 @@ spec:
           valueFrom:
             secretKeyRef:
               name: docker-secret
-              key: admin
+              key: username
         - name: DOCKER_PASSWORD
           valueFrom:
             secretKeyRef:
               name: docker-secret
-              key: Admin123
+              key: password
+      volumeMounts:
+      - name: docker-sock
+        mountPath: /var/run/docker.sock  # Montar el socket de Docker
+      - name: workspace
+        mountPath: /src
 
   volumes:
   - name: workspace
