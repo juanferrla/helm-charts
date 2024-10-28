@@ -18,13 +18,15 @@ spec:
   - name: git-clone
     container:
       image: alpine/git:latest
-      command: [sh]
-      source: |
-        # Configurar las credenciales de Git usando las variables de entorno
-        git config --global credential.helper store
-        echo "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
-        # Clonar el repositorio
-        git clone https://github.com/juanferrla/kappa.git /src
+      command: [sh, -c]
+      args: 
+        - |
+          # Configurar las credenciales de Git usando las variables de entorno
+          git config --global credential.helper store
+          echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
+          # Clonar el repositorio
+          git clone https://github.com/juanferrla/kappa.git /src || exit 1
+          ls -lah /src
       env:
       - name: GITHUB_USERNAME
         valueFrom:
@@ -48,8 +50,9 @@ spec:
       args:
         - |
           echo "Creando imagen mssql";
-          cd /src/mssql;
-          docker build -t my-mssql .;
+          ls -lah /src/;
+          cd /src/kappa/mssql;
+          docker build -t harbor.juanan.local/default/my-mssql:latest .;
           echo "Imagen creada";
       volumeMounts:
       - name: docker-sock
@@ -63,8 +66,9 @@ spec:
       image: docker:latest
       command: [sh, -c]
       args:
-        - echo "$DOCKER_PASSWORD" | docker login harbor.juanan.local -u "$DOCKER_USERNAME" --password-stdin;
-          docker push harbor.juanan.local/default/my-mssql:latest
+        - |
+          echo "$DOCKER_PASSWORD" | docker login harbor.juanan.local -u "$DOCKER_USERNAME" --password-stdin;
+          docker push harbor.juanan.local/default/my-mssql:latest;
       env:
         - name: DOCKER_USERNAME
           valueFrom:
