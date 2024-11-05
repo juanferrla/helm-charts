@@ -21,6 +21,7 @@ spec:
       command: [sh, -c]
       args: 
         - |
+          rm -rf /src/*
           # Configurar las credenciales de Git usando las variables de entorno
           git config --global credential.helper store
           echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
@@ -50,13 +51,18 @@ spec:
       args:
         - |
           echo "Creando imagen flask";
-          docker build -t harbor.juanan.local/default/flask:latest /src
+          docker images
+          ls -lah /
+          echo "listamos /src"
+          ls -lah /src/
+          docker build -t harbor.juanan.local/default/flask:3.0.0 /src
           echo "Imagen creada";
       volumeMounts:
-      - name: docker-sock
-        mountPath: /var/run/docker.sock  # Montar el socket de Docker
       - name: workspace
         mountPath: /src
+      - name: docker-sock
+        mountPath: /var/run/docker.sock  # Montar el socket de Docker
+
 
   # Template para subir la imagen a Harbor
   - name: docker-push
@@ -66,7 +72,7 @@ spec:
       args:
         - |
           echo "$DOCKER_PASSWORD" | docker login harbor.juanan.local -u "$DOCKER_USERNAME" --password-stdin;
-          docker push harbor.juanan.local/default/flask:latest;
+          docker push harbor.juanan.local/default/flask:3.0.0;
       env:
         - name: DOCKER_USERNAME
           valueFrom:
@@ -86,7 +92,9 @@ spec:
 
   volumes:
   - name: workspace
-    emptyDir: {}
+    persistentVolumeClaim:
+      claimName: workspace-pvc
+      persistentVolumeReclaimPolicy: Delete
   # Volumen para interactuar con Docker
   - name: docker-sock
     hostPath:
