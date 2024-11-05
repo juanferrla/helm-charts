@@ -25,7 +25,7 @@ spec:
           git config --global credential.helper store
           echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
           # Clonar el repositorio
-          git clone https://github.com/juanferrla/helm-charts.git /src || exit 1
+          git clone https://github.com/juanferrla/flask.git /src || exit 1
           ls -lah /src
       env:
       - name: GITHUB_USERNAME
@@ -49,10 +49,8 @@ spec:
       command: [sh, -c]
       args:
         - |
-          echo "Creando imagen mssql";
-          wget https://raw.githubusercontent.com/juanferrla/helm-charts/refs/heads/main/holamundo/Dockerfile -O /src/Dockerfile
-          
-          docker build -t harbor.juanan.local/default/my-mssql:latest /src
+          echo "Creando imagen flask";
+          docker build -t harbor.juanan.local/default/flask:latest /src
           echo "Imagen creada";
       volumeMounts:
       - name: docker-sock
@@ -68,7 +66,7 @@ spec:
       args:
         - |
           echo "$DOCKER_PASSWORD" | docker login harbor.juanan.local -u "$DOCKER_USERNAME" --password-stdin;
-          docker push harbor.juanan.local/default/my-mssql:latest;
+          docker push harbor.juanan.local/default/flask:latest;
       env:
         - name: DOCKER_USERNAME
           valueFrom:

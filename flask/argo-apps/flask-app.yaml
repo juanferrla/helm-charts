@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: flask
+  namespace: default
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/juanferrla/helm-charts.git'
+    targetRevision: HEAD
+    path: flask
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  sources:
+    - repoURL: 'https://github.com/juanferrla/helm-charts.git'
+      targetRevision: HEAD
+      path: flask
+      helm:
+        valueFiles:
+          - values.yaml
+
+
