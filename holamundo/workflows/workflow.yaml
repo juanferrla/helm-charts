@@ -50,8 +50,9 @@ spec:
       args:
         - |
           echo "Creando imagen mssql";
-          ls -lah /src/
-          docker build -t harbor.juanan.local/default/my-mssql:latest .
+          wget https://raw.githubusercontent.com/juanferrla/helm-charts/refs/heads/main/holamundo/Dockerfile -O /src/Dockerfile
+          
+          docker build -t harbor.juanan.local/default/my-mssql:latest /src
           echo "Imagen creada";
       volumeMounts:
       - name: docker-sock
