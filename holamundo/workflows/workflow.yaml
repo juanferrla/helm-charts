@@ -25,7 +25,7 @@ spec:
           git config --global credential.helper store
           echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
           # Clonar el repositorio
-          git clone https://github.com/juanferrla/kappa.git /src || exit 1
+          git clone https://github.com/juanferrla/helm-charts.git /src || exit 1
           ls -lah /src
       env:
       - name: GITHUB_USERNAME
@@ -50,9 +50,8 @@ spec:
       args:
         - |
           echo "Creando imagen mssql";
-          ls -lah /src/;
-          cd /src/kappa/mssql;
-          docker build -t harbor.juanan.local/default/my-mssql:latest .;
+          ls -lah /src/
+          docker build -t harbor.juanan.local/default/my-mssql:latest .
           echo "Imagen creada";
       volumeMounts:
       - name: docker-sock
