@@ -21,7 +21,7 @@ spec:
       command: [sh, -c]
       args: 
         - |
-          rm -rf /src/*
+          rm -rf /src/* /src/.*
           # Configurar las credenciales de Git usando las variables de entorno
           git config --global credential.helper store
           echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
