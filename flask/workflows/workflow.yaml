@@ -10,10 +10,20 @@ spec:
     steps:
     - - name: clone-repo
         template: git-clone
+    - - name: read-image-tag
+        template: read-image-tag
     - - name: build-docker-image
         template: docker-build
+        arguments:
+              parameters:
+                - name: image-tag
+                  value: "{{steps.read-image-tag.outputs.parameters.image-tag}}"
     - - name: push-image
         template: docker-push
+        arguments:
+              parameters:
+                - name: image-tag
+                  value: "{{steps.read-image-tag.outputs.parameters.image-tag}}"
 
   # Template para clonar el repositorio Git
   - name: git-clone
@@ -44,8 +54,29 @@ spec:
         - name: workspace
           mountPath: /src
 
+  - name: read-image-tag
+    script:
+      image: mikefarah/yq:latest
+      command: [sh, -c]
+      args:
+        - |
+          # Extrae el valor de `imageTag` desde el archivo values.yaml
+          wget https://raw.githubusercontent.com/juanferrla/helm-charts/refs/heads/main/flask/values.yaml -O /tmp/values.yaml
+          ls -lah /tmp
+          export IMAGE_TAG=$(yq e '.image.tag' /tmp/values.yaml)
+          echo "{{outputs.parameters.image-tag}}=$IMAGE_TAG"
+          echo $IMAGE_TAG > /tmp/image-tag.txt
+    outputs:
+      parameters:
+        - name: image-tag
+          valueFrom:
+            path: "/tmp/image-tag.txt"
+
   # Template para construir la imagen Docker
   - name: docker-build
+    inputs:
+      parameters:
+        - name: image-tag
     container:
       image: docker:latest
       command: [sh, -c]
@@ -56,7 +87,7 @@ spec:
           ls -lah /
           echo "listamos /src"
           ls -lah /src/
-          docker build -t harbor.juanan.local/default/flask:3.0.0 /src
+          docker build -t harbor.juanan.local/default/flask:{{inputs.parameters.image-tag}} /src
           echo "Imagen creada";
       volumeMounts:
       - name: workspace
@@ -67,13 +98,16 @@ spec:
 
   # Template para subir la imagen a Harbor
   - name: docker-push
+    inputs:
+      parameters:
+        - name: image-tag
     container:
       image: docker:latest
       command: [sh, -c]
       args:
         - |
           echo "$DOCKER_PASSWORD" | docker login harbor.juanan.local -u "$DOCKER_USERNAME" --password-stdin;
-          docker push harbor.juanan.local/default/flask:3.0.0;
+          docker push harbor.juanan.local/default/flask:{{inputs.parameters.image-tag}};
       env:
         - name: DOCKER_USERNAME
           valueFrom:
