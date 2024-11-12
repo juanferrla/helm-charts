@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: CronWorkflow
 metadata:
-  name: build-and-push-docker-
-  namespace: default
+  name: flask.build.push
+  namespace: data-workflows
 spec:
-  schedule: "30 15 * * *"  # Ejecución cada hora
+  schedule: "25 22 * * *"  # Ejecución cada hora
   concurrencyPolicy: "Forbid"  # Evita que se superpongan ejecuciones
   workflowSpec:
     entrypoint: build-push
