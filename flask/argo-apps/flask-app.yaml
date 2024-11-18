@@ -14,11 +14,11 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      parameters:
-        - name: replicaCount
-          value: "3"
-        - name: image.tag
-          value: 5.0.0
+#      parameters:
+#        - name: replicaCount
+#          value: "3"
+#        - name: image.tag
+#          value: 5.0.0
   project: default
   syncPolicy:
     automated:
