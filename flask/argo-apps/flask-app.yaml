@@ -14,13 +14,13 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-  sources: []
   project: default
   syncPolicy:
     automated:
-      prune: false
-      selfHeal: false
+      prune: true        # Elimina recursos no declarados en el repositorio
+      selfHeal: true      # Repara automáticamente desviaciones
     syncOptions:
+      - CreateNamespace=true      # Crea automáticamente el namespace si no existe
       - PrunePropagationPolicy=foreground
 
 
