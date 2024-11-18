@@ -5,8 +5,8 @@ metadata:
   namespace: devops
 spec:
   project: default
-  destination:
-    namespace: devops
+  destinations:
+    namespace: apps
     server: https://kubernetes.default.svc
   source:
     path: flask
