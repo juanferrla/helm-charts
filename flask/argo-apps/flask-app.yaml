@@ -22,8 +22,8 @@ spec:
   project: default
   syncPolicy:
     automated:
-      prune: true        # Elimina recursos no declarados en el repositorio
-      selfHeal: true      # Repara automáticamente desviaciones
+      prune: false        # Elimina recursos no declarados en el repositorio
+      selfHeal: false      # Repara automáticamente desviaciones
     syncOptions:
       - CreateNamespace=true      # Crea automáticamente el namespace si no existe
 
