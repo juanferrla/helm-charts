@@ -4,6 +4,7 @@ metadata:
   name: flask
   namespace: apps
 spec:
+  project: default
   destination:
     namespace: apps
     server: https://kubernetes.default.svc
@@ -19,7 +20,6 @@ spec:
           value: "3"
         - name: image.tag
           value: 5.0.0
-  project: default
   syncPolicy:
     automated:
       prune: false        # Elimina recursos no declarados en el repositorio
